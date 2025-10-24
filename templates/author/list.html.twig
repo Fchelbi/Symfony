@@ -1,5 +1,5 @@
 <form method="get" action="{{ path('author_getAuthors') }}">
-	<input type="text" name="author" placeholder="author name" value="{{name}}">
+<input type="text" name="author" placeholder="author name" value="{{ name is defined ? name : '' }}">
 	<button type="submit">Rechercher</button>
 </form>
 

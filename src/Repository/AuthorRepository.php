@@ -63,4 +63,12 @@ class AuthorRepository extends ServiceEntityRepository
            ->setParameter('max',$max);
            return $query->getResult();
        }
+       public function listAuthorByEmail(): array
+{
+    return $this->createQueryBuilder('a')
+        ->orderBy('a.email', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
 }

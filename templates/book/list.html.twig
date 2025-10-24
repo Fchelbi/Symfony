@@ -1,0 +1,50 @@
+{# templates/book/list.html.twig #}
+
+<h1>Liste des livres</h1>
+
+{# Formulaire pour rechercher par référence #}
+<form method="get" action="{{ path('book_list') }}">
+    <input type="text" name="ref" placeholder="Référence du livre" value="{{ ref is defined ? ref : '' }}">
+    <button type="submit">Rechercher</button>
+</form>
+
+{# Lien pour voir les livres triés par auteur #}
+<p>
+    <a href="{{ path('book_list_by_author') }}">Voir les livres triés par auteur</a>
+</p>
+<a href="{{ path('book_update_category') }}">
+    Mettre à jour les livres "Science-Fiction" en "Romance"
+</a>
+
+<h2>Liste des livres ({{ books|length }})</h2>
+
+{% if books is empty %}
+    <p>Aucun livre trouvé.</p>
+{% else %}
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Réf</th>
+                <th>Titre</th>
+                <th>Auteur</th>
+                <th>Catégorie</th>
+                <th>Date de publication</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for b in books %}
+            <tr>
+                <td>{{ b.ref }}</td>
+                <td>{{ b.title }}</td>
+                <td>{{ b.author.username }}</td>
+                <td>{{ b.category }}</td>
+                <td>{{ b.publishDate ? b.publishDate|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('book_list', {'ref': b.ref}) }}">Détails</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

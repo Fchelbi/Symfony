@@ -10,25 +10,35 @@ use Doctrine\ORM\Mapping as ORM;
 class Book
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 50)]
+    private ?string $ref = null; // clé primaire
+
+    #[ORM\Column(length: 100)]
     private ?string $title = null;
 
-    #[ORM\Column]
-    private ?bool $published = null;
+    #[ORM\Column(length: 50)]
+    private ?string $category = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $publishDate = null;
 
+    #[ORM\Column]
+    private ?bool $published = null;
+
     #[ORM\ManyToOne(inversedBy: 'books')]
     private ?Author $author = null;
 
-    public function getId(): ?int
+    // ================= GETTERS & SETTERS =================
+
+    public function getRef(): ?string
     {
-        return $this->id;
+        return $this->ref;
+    }
+
+    public function setRef(string $ref): static
+    {
+        $this->ref = $ref;
+        return $this;
     }
 
     public function getTitle(): ?string
@@ -39,19 +49,17 @@ class Book
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
-    public function isPublished(): ?bool
+    public function getCategory(): ?string
     {
-        return $this->published;
+        return $this->category;
     }
 
-    public function setPublished(bool $published): static
+    public function setCategory(string $category): static
     {
-        $this->published = $published;
-
+        $this->category = $category;
         return $this;
     }
 
@@ -63,7 +71,17 @@ class Book
     public function setPublishDate(?\DateTime $publishDate): static
     {
         $this->publishDate = $publishDate;
+        return $this;
+    }
 
+    public function isPublished(): ?bool
+    {
+        return $this->published;
+    }
+
+    public function setPublished(bool $published): static
+    {
+        $this->published = $published;
         return $this;
     }
 
@@ -75,7 +93,6 @@ class Book
     public function setAuthor(?Author $author): static
     {
         $this->author = $author;
-
         return $this;
     }
 }

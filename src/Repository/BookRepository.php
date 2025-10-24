@@ -6,9 +6,6 @@ use App\Entity\Book;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Book>
- */
 class BookRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +13,48 @@ class BookRepository extends ServiceEntityRepository
         parent::__construct($registry, Book::class);
     }
 
-    //    /**
-    //     * @return Book[] Returns an array of Book objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    // Rechercher un livre par ref
+    public function searchBookByRef(string $ref): array
+    {
+        return $this->createQueryBuilder('b')
+                    ->andWhere('b.ref = :ref')
+                    ->setParameter('ref', $ref)
+                    ->getQuery()
+                    ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Book
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    // Tous les livres triés par auteur
+    public function booksListByAuthors(): array
+    {
+        return $this->createQueryBuilder('b')
+                    ->join('b.author', 'a')
+                    ->orderBy('a.username', 'ASC')
+                    ->getQuery()
+                    ->getResult();
+    }
+    
+    public function findBooksBefore2023ByProlificAuthors(): array
+{
+    return $this->createQueryBuilder('b')
+        ->join('b.author', 'a')                        // link with author
+        ->andWhere('b.publishDate < :date')            // books before 2023
+        ->andWhere('a.nbBook > :nb')                   // authors with more than 10 books
+        ->setParameter('date', new \DateTime('2023-01-01'))
+        ->setParameter('nb', 10)
+        ->orderBy('b.publishDate', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+    public function updateCategoryScienceFictionToRomance(): int
+{
+    return $this->createQueryBuilder('b')
+        ->update()
+        ->set('b.category', ':newCategory')
+        ->where('b.category = :oldCategory')
+        ->setParameter('newCategory', 'Romance')
+        ->setParameter('oldCategory', 'Science-Fiction')
+        ->getQuery()
+        ->execute(); // returns number of affected rows
+}
+
 }
